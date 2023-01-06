@@ -4,8 +4,9 @@ import LP_cut
 import LP_recognition
 
 if __name__ == '__main__':
+    print("Testing")
     print(pytesseract.get_languages(config=''))
-    url='./img/car7.jpg'
+    url = './img/car7.jpg'
     img1 = cv2.imread(url)
     cv2.namedWindow("img1", cv2.WINDOW_NORMAL)
     cv2.imshow('img1', img1)
