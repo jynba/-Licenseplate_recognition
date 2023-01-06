@@ -39,13 +39,14 @@ def recognition(url):
     file = read_file(url)
     token = fetch_token()
     result_json = license_match(token, file)
-    result = result_json['words_result']
-    print(result['number'])
+    result = result_json.get('words_result', {})
+
+    return result
 
 
 if __name__ == '__main__':
     token = fetch_token()
-    picture_file1 = read_file('./img/car1.jpg')
+    picture_file1 = read_file('./img/car.jpg')
     result_json = license_match(token, picture_file1)
-    result = result_json['words_result']
-    print(result['number'])
+    result = result_json.get('words_result', {})
+    print(result.get('number', ""))
