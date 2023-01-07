@@ -31,8 +31,8 @@ def find_Color(oldimg, img_contours, threshold):
     Matrix = np.ones((20, 20), np.uint8)
     img_edge1 = cv2.morphologyEx(output, cv2.MORPH_CLOSE, Matrix)
     img_edge2 = cv2.morphologyEx(img_edge1, cv2.MORPH_OPEN, Matrix)
-    cv2.namedWindow("img_edge2", cv2.WINDOW_NORMAL)
-    cv2.imshow('img_edge2', img_edge2)
+    #cv2.namedWindow("img_edge2", cv2.WINDOW_NORMAL)
+    #cv2.imshow('img_edge2', img_edge2)
     # 阈值分割，过滤浅色的区域
     _, image_binary = cv2.threshold(img_edge2, threshold, 255, cv2.THRESH_BINARY)
     # cv2.namedWindow("image_binary", cv2.WINDOW_NORMAL)
@@ -119,8 +119,8 @@ def find_edge(oldimg, img):
     # 再加一次高斯去噪
     img_gaus_1 = cv2.GaussianBlur(img_ab, (5, 5), 0)  # 高斯模糊
     ret2, img_thre_s = cv2.threshold(img_gaus_1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)  # 正二值化
-    cv2.namedWindow("img_thre_s", cv2.WINDOW_NORMAL)
-    cv2.imshow('img_thre_s', img_thre_s)
+    #cv2.namedWindow("img_thre_s", cv2.WINDOW_NORMAL)
+    #cv2.imshow('img_thre_s', img_thre_s)
     # 对比canny边缘检测
     # img = cv2.resize(img, (600, 400))
     # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -158,6 +158,15 @@ def combine_color_edge(oldimg, filter_color, filter_edge):
     return img_med
 
 
+def check_Final(img, final, threshold):
+    # 循环直到阈值满足至少出现一个满足条件的结果,避免颜色太浅，阈值太高，识别不出
+    while final is None and threshold > 0:
+        threshold -= 1
+        filter_color = find_Color(img, img, threshold)
+        final = filter_Region(img, filter_color, threshold)
+    if final is not None:
+        return final
+
 def main():
     for i in range(1, 6):
         print("****************** ", i, " *****************")
@@ -176,7 +185,6 @@ def main():
             cv2.namedWindow("final", cv2.WINDOW_NORMAL)
             cv2.imshow('final', final)
         cv2.waitKey(0)
-
 
     # img1 = cv2.imread('./img/car24.jpg')
     # img1 = pretreatment(img1)
